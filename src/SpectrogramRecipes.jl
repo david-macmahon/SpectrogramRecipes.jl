@@ -62,7 +62,6 @@ end
     xtickidxs = range(1, stop=length(xaxv), length=xticks)
     ytickidxs = range(1, stop=length(yaxv), length=yticks)
 
-    @show typeof(xaxv[1]) xtickidxs xdigits
     xtickvals = round.(float(typeof(xaxv[1])), interp(xaxv, xtickidxs), digits=xdigits)
     ytickvals = round.(float(typeof(yaxv[1])), interp(yaxv, ytickidxs), digits=ydigits)
 
