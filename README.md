@@ -1,17 +1,18 @@
 # SpectrogramRecipes
 
-Recipes for plotting spectrogram data.
+Recipes for plotting spectrogram data stored in an `AxisArray`.
 
 # Description
 
 `SpectrogramRecipes` provide the plotting functions `spectrogram` and
-`spectrogram!` for plotting spectrogram data.  These functions are very similar
-to `heatmap` and `heatmap!`, but they provide some additional conveniences
-tailored to spectrogram data.
+`spectrogram!` for plotting spectrogram data stored in an `AxisArray`.  These
+functions are very similar to `heatmap` and `heatmap!`, but they provide some
+additional conveniences tailored to spectrogram data.
 
-- Integration with `AxisArrays`
+- Axes ticks are taken from `AxisArray` in axis order
 - Works with `Unitful` values for the `AxisArray` axes (requires `UnitfulRecipes`)
 - Plot attribute `wf` (short for for *waterfall*) to transpose data to be plotted
+- Plot attributes `xticks` and `yticks` specify number of tick marks per axis
 
 # Spectrograms
 
@@ -24,33 +25,35 @@ differing colors.
 
 # Data ordering
 
-`SpectrogramRecipes` generally assume that the first (i.e. fastest changing)
-axis of the spectrogram data is the spectral dimension and the second dimension
-is the non-spectral dimension.  The exception to this occurs when the
-spectrogram data is in an `AxisArray` (see below).
+If the `AxisArray` being plotted has an axis whose name is recognized as a
+spectral name, the corresponding dimension is used as the spectral axis.
+Otherwise, the first (i.e. fastest changing) axis of the spectrogram data is the
+spectral dimension and the second dimension is the non-spectral dimension.
 
-# AxisArrays
-
-When `spectrogram` or `spectrogram` is passed a single `AxisArray`, the axes
-from the `AxisArray` are used to specify the `x` and `y` values for the plot.
-If the spectrogram data is an `AxisArray` with an axis whose name is recognized
-as a spectral name then that axis is taken as the spectral axis.  Currently,
-recognized spectral names are:
+Currently, recognized spectral names are:
 
 - `:frequency`
 - `:freq`
 - `:wavelength`
 - `:wl`
 
-If an `AxisArray` has an axis with a recognized spectral name, that axis is
-treated as the spectral axis.  Otherwise the default data ordering described
-above applies.
+# Tick marks
+
+The `xticks` and `yticks` keyword parameters can be used to specify the number
+of ticks along the corresponding axis.  Both of these keyword parameters default
+to 2.  The ticks are evenly spaced across the span of the axis and are labeled
+using values from the corresponding `AxisArray` axis, interpolated as necessary
+if the evenly spaced tick mark falls between two axis values.  By default, the
+tick values are rounded to six digits after the decimal point.  To round to a
+different number of digits, pass a tuple to `xticks` or `yticks` consisting of
+`(nticks, ndigits)`.
 
 # Unitful axes
 
-`SpectrogramRecipes` does not depend on `Unitful`, but you can still plot
-spectrogram data that is in an `AxisArray` containing `Unitful` quantities so
-long as you import `UnitfulRecipes` in addition to `SpectrogramRecipes`.
+`SpectrogramRecipes` does not depend on `Unitful`, but plotting spectrogram data
+that is in an `AxisArray` whose axes contain `Unitful` quantities is supported
+(and recommended!) so long as you import `UnitfulRecipes` in addition to
+`SpectrogramRecipes`.
 
 Currently no checks are done to ensure that the units of the spectral axis
 are appropriate for a spectral quantity (e.g. frequency or wavelength).
@@ -58,14 +61,13 @@ are appropriate for a spectral quantity (e.g. frequency or wavelength).
 # Plot orientation
 
 Spectrograms default to plotting with the spectral axis being vertical with
-values ascending upward.  If you want to have the spectral axis being vertical
-with values descending upward, pass `yflip=true` as a keyword argument to
-`spectrogram` or `spectrogram!`.
+data elements plotted bottom to top and the data elements from the other axis
+being plotted left to right.
 
 To display the histogram with the spectral axis on the horizontal, pass
 `wf=true` as a keyword argument to `spectrogram` or `spectrogram!`.  `wf` is
 short for *waterfall*, which is a term often used to describe plots displaying
 spectrogram data in this orientation.  When `wf=true` is passed, the
-non-spectral axis will be plotting vertically with values ascending downward.
-To have these values descend downward along the vertical axis, pass
-`yflip=false`.
+non-spectral axis will be plotting vertically from top to bottom.
+
+The `xflip` and `yflip` keywords can be used to "flip" that axis of the plot.
