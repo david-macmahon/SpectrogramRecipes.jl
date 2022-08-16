@@ -8,6 +8,7 @@ AxisArrays = "39de3d68-74b9-583c-8d2d-e117c070f3a9"
 RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 
 [compat]
+RecipesBase = "1"
 julia = "1.6"
 
 [extras]
